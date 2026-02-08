@@ -177,8 +177,51 @@ root@host:~# cp /etc/nginx/nginx.conf /etc/nginx/nginx-first.conf
 root@host:~# cp /etc/nginx/nginx.conf /etc/nginx/nginx-second.conf
 root@host:~# nano /etc/nginx/nginx-first.conf
 root@host:~# nano /etc/nginx/nginx-second.conf
-root@host:~# systemctl start nginx@first
-root@host:~# systemctl start nginx@second
-root@host:~# systemctl status nginx@second
-root@host:~# systemctl status nginx@first
+root@host:~# systemctl start nginx@first.service
+root@host:~# systemctl start nginx@second.service
+root@host:~# systemctl status nginx@first.service
+● nginx@first.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/etc/systemd/system/nginx@.service; disabled; preset: enabled)
+     Active: active (running) since Sun 2026-02-08 09:23:36 UTC; 1min 26s ago
+       Docs: man:nginx(8)
+    Process: 22079 ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx-first.conf -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 22081 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx-first.conf -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 22082 (nginx)
+      Tasks: 2 (limit: 2266)
+     Memory: 1.7M (peak: 1.9M)
+        CPU: 74ms
+     CGroup: /system.slice/system-nginx.slice/nginx@first.service
+             ├─22082 "nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-first.conf -g daemon on; master_process on;"
+             └─22083 "nginx: worker process"
+
+Feb 08 09:23:36 host systemd[1]: Starting nginx@first.service - A high performance web server and a reverse proxy server...
+Feb 08 09:23:36 host systemd[1]: Started nginx@first.service - A high performance web server and a reverse proxy server.
+root@host:~# systemctl status nginx@second.service
+● nginx@second.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/etc/systemd/system/nginx@.service; disabled; preset: enabled)
+     Active: active (running) since Sun 2026-02-08 09:23:48 UTC; 1min 36s ago
+       Docs: man:nginx(8)
+    Process: 22091 ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx-second.conf -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+    Process: 22093 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx-second.conf -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+   Main PID: 22094 (nginx)
+      Tasks: 2 (limit: 2266)
+     Memory: 1.7M (peak: 1.9M)
+        CPU: 29ms
+     CGroup: /system.slice/system-nginx.slice/nginx@second.service
+             ├─22094 "nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-second.conf -g daemon on; master_process on;"
+             └─22095 "nginx: worker process"
+
+Feb 08 09:23:48 host systemd[1]: Starting nginx@second.service - A high performance web server and a reverse proxy server...
+Feb 08 09:23:48 host systemd[1]: Started nginx@second.service - A high performance web server and a reverse proxy server.
+root@host:~# ss -tlnpu | grep nginx
+tcp   LISTEN 0      511          0.0.0.0:9001       0.0.0.0:*    users:(("nginx",pid=22083,fd=5),("nginx",pid=22082,fd=5))                                              
+tcp   LISTEN 0      511          0.0.0.0:9002       0.0.0.0:*    users:(("nginx",pid=22095,fd=5),("nginx",pid=22094,fd=5))                                              
+root@host:~# ps afx | grep nginx
+  22342 pts/1    S+     0:00                      \_ grep --color=auto nginx
+  22082 ?        Ss     0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-first.conf -g daemon on; master_process on;
+  22083 ?        S      0:00  \_ nginx: worker process
+  22094 ?        Ss     0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx-second.conf -g daemon on; master_process on;
+  22095 ?        S      0:00  \_ nginx: worker process
+root@host:~#
+
 ```
