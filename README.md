@@ -177,4 +177,8 @@ root@host:~# cp /etc/nginx/nginx.conf /etc/nginx/nginx-first.conf
 root@host:~# cp /etc/nginx/nginx.conf /etc/nginx/nginx-second.conf
 root@host:~# nano /etc/nginx/nginx-first.conf
 root@host:~# nano /etc/nginx/nginx-second.conf
-root@host:~# 
+root@host:~# systemctl start nginx@first
+root@host:~# systemctl start nginx@second
+root@host:~# systemctl status nginx@second
+root@host:~# systemctl status nginx@first
+```
